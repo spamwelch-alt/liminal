@@ -1,0 +1,118 @@
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// LIMINAL — Showcase Program
+// Demonstrates: uncertainty propagation, decay, ghost memory,
+//               uncertain conditionals, confidence collapse
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// ─── 1. Basic Uncertainty ───────────────────────────────────────
+log("═══ 1. Basic Uncertainty ═══")
+
+let certain = 100
+let fairly_sure ~ 0.85 = 100
+let uncertain ~ 0.45 = 100
+let barely_there ~ 0.08 = 100
+
+print(certain)
+print(fairly_sure)
+print(uncertain)
+print(barely_there)
+
+// ─── 2. Confidence Propagation ──────────────────────────────────
+log("═══ 2. Confidence Propagation ═══")
+
+let sensor_temp ~ 0.87 = 21.4
+let sensor_humidity ~ 0.72 = 65.0
+
+// Addition: confidence = min(0.87, 0.72) = 0.72
+let heat_index = sensor_temp + sensor_humidity
+log("heat index")
+print(heat_index)
+
+// Multiplication: confidence compounds
+let risk_factor = sensor_temp * sensor_humidity
+log("risk factor")
+print(risk_factor)
+
+// Chain of operations: confidence keeps degrading
+let a ~ 0.9 = 10
+let b ~ 0.8 = 20
+let c ~ 0.7 = 30
+let chain = a + b + c
+log("chain of uncertain additions")
+print(chain)
+
+// ─── 3. Uncertain Conditionals ──────────────────────────────────
+log("═══ 3. Uncertain Conditionals ═══")
+
+let temperature ~ 0.8 = 22.5
+let threshold = 20.0
+
+// Both branches may run — weighted by confidence
+if temperature > threshold {
+    log("branch: cooling activated (weighted by confidence)")
+} else {
+    log("branch: heating activated (weighted by 1-confidence)")
+}
+
+// ─── 4. Ghost Memory ────────────────────────────────────────────
+log("═══ 4. Ghost Memory ═══")
+
+let fresh ~ 0.95 = 42
+let fading ~ 0.15 = 42
+let ghost ~ 0.03 = 42
+
+log("fresh value:")
+print(fresh)
+log("fading value:")
+print(fading)
+log("ghost value:")
+print(ghost)
+log("is fresh a ghost?")
+print(is_ghost(fresh))
+log("is ghost a ghost?")
+print(is_ghost(ghost))
+
+// ─── 5. Collapse Operators ──────────────────────────────────────
+log("═══ 5. Collapse Operators ═══")
+
+let reliable ~ 0.8 = 98.6
+let unreliable ~ 0.03 = 999
+
+// Collapse unreliable to fallback
+let safe_value = unreliable!! 0.0
+log("unreliable collapsed to fallback:")
+print(safe_value)
+
+// Threshold check
+let checked = reliable ~? 0.6
+log("reliable value passed threshold check:")
+print(checked)
+
+// ─── 6. Functions with Confidence ───────────────────────────────
+log("═══ 6. Functions with Confidence ═══")
+
+fn read_sensor() ~ 0.75 -> Float {
+    return 21.4
+}
+
+fn calculate(x: Float) -> Float {
+    return x + 5.0
+}
+
+let reading = read_sensor()
+log("sensor reading (function multiplies confidence by 0.75):")
+print(reading)
+
+let result = calculate(10.0)
+log("certain calculation:")
+print(result)
+
+// ─── 7. The Point ───────────────────────────────────────────────
+log("═══ 7. The Point ═══")
+log("In every other language, these would all print 100:")
+print(certain)
+print(fairly_sure)
+print(uncertain)
+print(barely_there)
+log("In Liminal, you can see how much to trust each one.")
+log("Uncertainty is not failure. It is honest knowledge.")
